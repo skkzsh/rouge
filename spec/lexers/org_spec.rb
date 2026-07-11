@@ -288,17 +288,27 @@ describe Rouge::Lexers::Org do
       end
     end
 
-    describe 'quote blocks' do
-      it 'recognizes Punctuation tokens in quote blocks' do
+    describe 'paragraph blocks' do
+      it 'recognizes Punctuation tokens in paragraph blocks' do
         [
           <<~ORG,
             #+BEGIN_QUOTE
-            Here is an QUOTE.
+            text
             #+END_QUOTE
           ORG
           <<~ORG,
+            #+BEGIN_CENTER
+            text
+            #+END_CENTER
+          ORG
+          <<~ORG,
+            #+BEGIN_VERSE
+            text
+            #+END_VERSE
+          ORG
+          <<~ORG,
             #+begin_quote
-            Here is an quote.
+            text
             #+end_quote
           ORG
         ].each do |text|
@@ -306,14 +316,27 @@ describe Rouge::Lexers::Org do
         end
       end
 
-      it 'recognizes emphasis tokens inside quote blocks' do
-        text = <<~ORG
-          #+BEGIN_QUOTE
-          This is *bold* and /italic/.
-          #+END_QUOTE
-        ORG
-        assert_has_token("Generic.Strong", text)
-        assert_has_token("Generic.Emph", text)
+      it 'recognizes emphasis tokens inside paragraph blocks' do
+        [
+          <<~ORG,
+            #+BEGIN_QUOTE
+            *bold* and /italic/
+            #+END_QUOTE
+          ORG
+          <<~ORG,
+            #+BEGIN_CENTER
+            *bold* and /italic/
+            #+END_CENTER
+          ORG
+          <<~ORG,
+            #+BEGIN_VERSE
+            *bold* and /italic/
+            #+END_VERSE
+          ORG
+        ].each do |text|
+          assert_has_token("Generic.Strong", text)
+          assert_has_token("Generic.Emph", text)
+        end
       end
     end
 

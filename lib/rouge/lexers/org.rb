@@ -35,8 +35,15 @@ module Rouge
         # example blocks
         rule %r/^[ \t]*#\+BEGIN_EXAMPLE\b/i, Literal::String, :example_block
 
-        # quote blocks
-        rule %r/^[ \t]*#\+BEGIN_QUOTE\b/i, Punctuation, :quote_block
+        # paragraph blocks (quote, center, verse, etc.)
+        rule %r/^[ \t]*#\+BEGIN_(\w+)\b/i do |m|
+          token Punctuation, m[0]
+          block_type = m[1]
+          push do
+            rule %r/^[ \t]*#\+END_#{block_type}\b/i, Punctuation, :pop!
+            mixin :inline
+          end
+        end
 
         # inline examples
         rule %r/^[ \t]*:[ \t][^\n]*/, Literal::String
@@ -100,10 +107,6 @@ module Rouge
         rule %r/\n/, Literal::String
       end
 
-      state :quote_block do
-        rule %r/^[ \t]*#\+END_QUOTE\b/i, Punctuation, :pop!
-        mixin :inline
-      end
     end
   end
 end
