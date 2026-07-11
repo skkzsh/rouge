@@ -50,7 +50,19 @@ module Rouge
           token Text, m[3] if m[3] && !m[3].empty?
           token Name::Label, m[4] if m[4]
           token Text, m[5]
-          push :src_block
+
+          sublexer = PlainText.new(@options.merge(:token => Str::Backtick))
+          sublexer.reset!
+
+          push do
+            rule %r/^[ \t]*#\+END_SRC\b/i, Literal::String, :pop!
+            rule %r/[^\n]+/ do |mb|
+              delegate sublexer, mb[0]
+            end
+            rule %r/\n/ do |mb|
+              delegate sublexer, mb[0]
+            end
+          end
         end
 
         # export blocks
@@ -127,12 +139,6 @@ module Rouge
 
       state :example_block do
         rule %r/^[ \t]*#\+END_EXAMPLE\b/i, Literal::String, :pop!
-        rule %r/[^\n]+/, Literal::String
-        rule %r/\n/, Literal::String
-      end
-
-      state :src_block do
-        rule %r/^[ \t]*#\+END_SRC\b/i, Literal::String, :pop!
         rule %r/[^\n]+/, Literal::String
         rule %r/\n/, Literal::String
       end
