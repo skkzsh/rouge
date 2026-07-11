@@ -26,6 +26,9 @@ describe Rouge::Lexers::Org do
           "- item\n",
           "+ item\n",
           "  - nested\n",
+          "1. item\n",
+          "1) item\n",
+          "  1. nested\n",
         ].each do |text|
           assert_has_token("Punctuation", text)
         end
@@ -36,6 +39,9 @@ describe Rouge::Lexers::Org do
           "----\n",
           "-item\n",
           "+item\n",
+          "1 item\n",
+          "1.item\n",
+          "1)item\n",
         ].each do |text|
           deny_has_token("Punctuation", text)
         end

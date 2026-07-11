@@ -15,8 +15,9 @@ module Rouge
         # horizontal rules
         rule %r/^[ \t]*-{5,}\s*$/, Punctuation
 
-        # unordered lists
+        # lists (unordered, ordered)
         rule %r/^[ \t]*[-+](?=[ \t])/, Punctuation
+        rule %r/^[ \t]*\d+[.)](?=[ \t])/, Punctuation
 
         # everything else
         rule %r/[^\n]+/, Text
