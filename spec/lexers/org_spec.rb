@@ -165,6 +165,77 @@ describe Rouge::Lexers::Org do
       end
     end
 
+    describe 'emphasis' do
+      it 'recognizes Generic::Strong tokens in emphasis' do
+        [
+          "*bold*\n",
+          "*bold text*\n",
+          "inline *bold* text\n",
+        ].each do |text|
+          assert_has_token("Generic.Strong", text)
+        end
+      end
+
+      it 'recognizes Generic::Emph tokens in emphasis' do
+        [
+          "/italic/\n",
+          "/italic text/\n",
+          "_underline_\n",
+          "_underlined text_\n",
+        ].each do |text|
+          assert_has_token("Generic.Emph", text)
+        end
+      end
+
+      it 'recognizes Generic::Deleted tokens in emphasis' do
+        [
+          "+strike+\n",
+          "+strike text+\n",
+        ].each do |text|
+          assert_has_token("Generic.Deleted", text)
+        end
+      end
+
+      it 'recognizes Literal::String tokens in verbatim emphasis' do
+        [
+          "=verbatim=\n",
+          "=verbatim text=\n",
+        ].each do |text|
+          assert_has_token("Literal.String", text)
+        end
+      end
+
+      it 'recognizes Literal::String::Backtick tokens in code emphasis' do
+        [
+          "~code~\n",
+          "~inline code~\n",
+        ].each do |text|
+          assert_has_token("Literal.String.Backtick", text)
+        end
+      end
+
+      it 'recognizes Literal::String::Interpol tokens in sub/superscript' do
+        [
+          "a ^{sup} text\n",
+          "a _{sub} text\n",
+        ].each do |text|
+          assert_has_token("Literal.String.Interpol", text)
+        end
+      end
+
+      it 'does not treat edge cases as emphasis' do
+        [
+          "* bold *\n",
+          "a*b*c\n",
+          "1 + 2 + 3\n",
+        ].each do |text|
+          deny_has_token("Generic.Strong", text)
+          deny_has_token("Generic.Emph", text)
+          deny_has_token("Generic.Deleted", text)
+        end
+      end
+    end
+
     describe 'comments' do
       it 'recognizes Comment tokens' do
         [
