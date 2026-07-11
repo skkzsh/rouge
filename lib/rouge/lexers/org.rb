@@ -12,6 +12,10 @@ module Rouge
       mimetypes 'text/org'
 
       state :root do
+        # horizontal rules
+        rule %r/^[ \t]*-{5,}\s*$/, Punctuation
+
+        # everything else
         rule %r/[^\n]+/, Text
         rule %r/\n/, Text
       end
