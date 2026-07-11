@@ -47,5 +47,33 @@ describe Rouge::Lexers::Org do
         end
       end
     end
+
+    describe 'headings' do
+      it 'recognizes Generic::Heading tokens' do
+        assert_has_token("Generic.Heading", "* Heading 1\n")
+      end
+
+      it 'recognizes Generic::Subheading tokens' do
+        [
+          "** Heading 2\n",
+          "*** Heading 3\n",
+          "**** Heading 4\n",
+          "***** Heading 5\n",
+          "****** Heading 6\n",
+        ].each do |text|
+          assert_has_token("Generic.Subheading", text)
+        end
+      end
+
+      it 'does not treat edge cases as headings' do
+        [
+          " * Not heading\n",
+          "*NoSpace\n",
+        ].each do |text|
+          deny_has_token("Generic.Heading", text)
+          deny_has_token("Generic.Subheading", text)
+        end
+      end
+    end
   end
 end

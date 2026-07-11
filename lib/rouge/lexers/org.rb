@@ -15,6 +15,15 @@ module Rouge
         # horizontal rules
         rule %r/^[ \t]*-{5,}\s*$/, Punctuation
 
+        # headings
+        rule %r/^(\*+)[ \t][^\n]*/ do |m|
+          if m[1].length == 1
+            token Generic::Heading, m[0]
+          else
+            token Generic::Subheading, m[0]
+          end
+        end
+
         # lists (unordered, ordered)
         rule %r/^[ \t]*[-+](?=[ \t])/, Punctuation
         rule %r/^[ \t]*\d+[.)](?=[ \t])/, Punctuation
