@@ -38,6 +38,19 @@ module Rouge
         # inline examples
         rule %r/^[ \t]*:[ \t][^\n]*/, Literal::String
 
+        # checkboxes (unordered, ordered)
+        rule %r/^[ \t]*[-+][ \t]\[[ X-]\]/, Punctuation
+        rule %r/^[ \t]*\d+[.)][ \t]\[[ X-]\]/, Punctuation
+
+        # lists (unordered, ordered)
+        rule %r/^[ \t]*[-+](?=[ \t])/, Punctuation
+        rule %r/^[ \t]*\d+[.)](?=[ \t])/, Punctuation
+
+        # inline formatting (links, emphasis, text)
+        mixin :inline
+      end
+
+      state :inline do
         # table (separators, rows)
         rule %r/^[ \t]*\|[-|\+]*[ \t]*$/, Punctuation
         rule %r/^[ \t]*\|[^\n]*/, Punctuation
@@ -65,14 +78,6 @@ module Rouge
         rule %r/(?<![\w~])~([^\s~]|[^\s~][^~\n]*?[^\s~])~(?![\w~])/, Literal::String::Backtick
         rule %r/\^\{[^}\n]*\}/, Literal::String::Interpol
         rule %r/_\{[^}\n]*\}/, Literal::String::Interpol
-
-        # checkboxes (unordered, ordered)
-        rule %r/^[ \t]*[-+][ \t]\[[ X-]\]/, Punctuation
-        rule %r/^[ \t]*\d+[.)][ \t]\[[ X-]\]/, Punctuation
-
-        # lists (unordered, ordered)
-        rule %r/^[ \t]*[-+](?=[ \t])/, Punctuation
-        rule %r/^[ \t]*\d+[.)](?=[ \t])/, Punctuation
 
         # everything else
         rule %r/(?:(?!https?:\/\/)[^*\/+=~^_{\n])+/, Text
