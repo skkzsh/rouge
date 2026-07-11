@@ -35,6 +35,8 @@ describe Rouge::Lexers::Org do
           "+ [ ] unchecked plus\n",
           "1. [ ] unchecked ordered\n",
           "1. [X] checked ordered\n",
+          "|-------+-------|\n",
+          "| Item  | Price |\n",
         ].each do |text|
           assert_has_token("Punctuation", text)
         end
@@ -48,6 +50,7 @@ describe Rouge::Lexers::Org do
           "1 item\n",
           "1.item\n",
           "1)item\n",
+          "foo | bar\n",
         ].each do |text|
           deny_has_token("Punctuation", text)
         end
