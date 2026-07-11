@@ -32,6 +32,9 @@ module Rouge
         # comment blocks
         rule %r/^[ \t]*#\+BEGIN_COMMENT\b/i, Comment, :comment_block
 
+        # inline examples
+        rule %r/^[ \t]*:[ \t][^\n]*/, Literal::String
+
         # table (separators, rows)
         rule %r/^[ \t]*\|[-|\+]*[ \t]*$/, Punctuation
         rule %r/^[ \t]*\|[^\n]*/, Punctuation

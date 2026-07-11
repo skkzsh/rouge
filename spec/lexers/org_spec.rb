@@ -200,5 +200,16 @@ describe Rouge::Lexers::Org do
         end
       end
     end
+
+    describe 'examples' do
+      it 'recognizes Literal::String tokens in inline examples' do
+        [
+          ": This is an inline example\n",
+          "  : indented inline example\n",
+        ].each do |text|
+          assert_has_token("Literal.String", text)
+        end
+      end
+    end
   end
 end
