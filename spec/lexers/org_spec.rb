@@ -81,5 +81,30 @@ describe Rouge::Lexers::Org do
         end
       end
     end
+
+    describe 'metadata' do
+      it 'recognizes Name::Tag tokens' do
+        [
+          "#+TITLE: Sample\n",
+          "#+AUTHOR: Tester\n",
+          "#+LANGUAGE: ja\n",
+          "#+OPTIONS: toc:nil\n",
+          "#+RESULTS:\n",
+          "#+TBLFM: formula\n",
+          "  #+TITLE: Indented\n",
+        ].each do |text|
+          assert_has_token("Name.Tag", text)
+        end
+      end
+
+      it 'does not treat edge cases as Name::Tag' do
+        [
+          "#+ TITLE: Sample\n",
+          "#+TITLE : Sample\n",
+        ].each do |text|
+          deny_has_token("Name.Tag", text)
+        end
+      end
+    end
   end
 end
