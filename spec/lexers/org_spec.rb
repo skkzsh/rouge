@@ -20,12 +20,25 @@ describe Rouge::Lexers::Org do
     include Support::Lexing
 
     describe 'punctuation' do
-      it 'recognizes horizontal rules' do
-        assert_has_token("Punctuation", "-----\n")
+      it 'recognizes Punctuation tokens' do
+        [
+          "-----\n",
+          "- item\n",
+          "+ item\n",
+          "  - nested\n",
+        ].each do |text|
+          assert_has_token("Punctuation", text)
+        end
       end
 
-      it 'does not recognize horizontal rules' do
-        deny_has_token("Punctuation", "----\n")
+      it 'does not treat edge cases as Punctuation' do
+        [
+          "----\n",
+          "-item\n",
+          "+item\n",
+        ].each do |text|
+          deny_has_token("Punctuation", text)
+        end
       end
     end
   end
