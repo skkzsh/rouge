@@ -29,6 +29,9 @@ module Rouge
         # comments
         rule %r/^[ \t]*#[ \t][^\n]*/, Comment
 
+        # comment blocks
+        rule %r/^[ \t]*#\+BEGIN_COMMENT\b/i, Comment, :comment_block
+
         # table (separators, rows)
         rule %r/^[ \t]*\|[-|\+]*[ \t]*$/, Punctuation
         rule %r/^[ \t]*\|[^\n]*/, Punctuation
@@ -55,6 +58,12 @@ module Rouge
         # everything else
         rule %r/[^\n]+/, Text
         rule %r/\n/, Text
+      end
+
+      state :comment_block do
+        rule %r/^[ \t]*#\+END_COMMENT\b/i, Comment, :pop!
+        rule %r/[^\n]+/, Comment
+        rule %r/\n/, Comment
       end
     end
   end

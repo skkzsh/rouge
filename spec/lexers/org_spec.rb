@@ -182,6 +182,23 @@ describe Rouge::Lexers::Org do
           deny_has_token("Comment", text)
         end
       end
+
+      it 'recognizes Comment tokens in block comments' do
+        [
+          <<~ORG,
+            #+BEGIN_COMMENT
+            hidden
+            #+END_COMMENT
+          ORG
+          <<~ORG,
+            #+begin_comment
+            hidden
+            #+end_comment
+          ORG
+        ].each do |text|
+          assert_has_token("Comment", text)
+        end
+      end
     end
   end
 end
