@@ -1,0 +1,57 @@
+# -*- org -*-
+#+TITLE: Welcome to Org-mode
+
+* Heading 1
+** Heading 2
+
+* COMMENT Hidden heading
+
+- Unordered item
+- [X] Checked item
+
+1. Ordered item
+2. Another item
+
+| Column A | Column B |
+|----------+----------|
+| Cell 1   | Cell 2   |
+
+*bold* /italic/ _underline_ +strike+ =verbatim= ~code~ ^{sup} _{sub}
+
+\*not bold\* \/not italic\/ \_not underlined\_ \+not strike\+ \=not verbatim\= \~not code\~
+
+[[https://example.com][Example link]]
+
+[[./img/cat.png]]
+
+See https://example.com for details.
+
+-----
+
+#+BEGIN_COMMENT
+This entire block is a comment.
+#+END_COMMENT
+
+#+BEGIN_QUOTE
+*bold* and /italic/
+#+END_QUOTE
+
+#+BEGIN_EXAMPLE
+Here is an example block.
+#+END_EXAMPLE
+
+: Here is an example.
+
+#+BEGIN_SRC ruby :exports both
+puts "Hello, Org!"
+#+END_SRC
+
+#+BEGIN_EXPORT html
+<p>This is <strong>HTML</strong> content.</p>
+#+END_EXPORT
+
+#+BEGIN: clocktable :maxlevel 2
+| Heading    | Time    |
+|-----------+---------|
+| Task      | 1:00    |
+#+END:
