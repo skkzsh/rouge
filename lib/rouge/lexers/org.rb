@@ -35,6 +35,9 @@ module Rouge
         # example blocks
         rule %r/^[ \t]*#\+BEGIN_EXAMPLE\b/i, Literal::String, :example_block
 
+        # quote blocks
+        rule %r/^[ \t]*#\+BEGIN_QUOTE\b/i, Punctuation, :quote_block
+
         # inline examples
         rule %r/^[ \t]*:[ \t][^\n]*/, Literal::String
 
@@ -95,6 +98,11 @@ module Rouge
         rule %r/^[ \t]*#\+END_EXAMPLE\b/i, Literal::String, :pop!
         rule %r/[^\n]+/, Literal::String
         rule %r/\n/, Literal::String
+      end
+
+      state :quote_block do
+        rule %r/^[ \t]*#\+END_QUOTE\b/i, Punctuation, :pop!
+        mixin :inline
       end
     end
   end
