@@ -405,7 +405,7 @@ describe Rouge::Lexers::Org do
 
     describe 'source blocks' do
       describe 'with language name' do
-        it 'recognizes Literal::String tokens' do
+        it 'recognizes Literal::String and Name::Label tokens' do
           [
             <<~ORG,
               #+BEGIN_SRC ruby :exports both
@@ -419,18 +419,20 @@ describe Rouge::Lexers::Org do
             ORG
           ].each do |text|
             assert_has_token("Literal.String", text)
+            assert_has_token("Name.Label", text)
           end
         end
       end
 
       describe 'without language name' do
-        it 'recognizes Literal::String tokens' do
+        it 'recognizes Literal::String but not Name::Label tokens' do
           text = <<~ORG
             #+BEGIN_SRC
             puts "hello"
             #+END_SRC
           ORG
           assert_has_token("Literal.String", text)
+          deny_has_token("Name.Label", text)
         end
       end
     end

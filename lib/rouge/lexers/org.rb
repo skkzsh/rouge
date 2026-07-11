@@ -45,7 +45,13 @@ module Rouge
         rule %r/^[ \t]*#\+BEGIN_EXAMPLE\b/i, Literal::String, :example_block
 
         # source blocks
-        rule %r/^[ \t]*#\+BEGIN_SRC\b/i, Literal::String, :src_block
+        rule %r/^([ \t]*)(#\+BEGIN_SRC)([ \t]*)(\w+)?([^\n]*\n)/i do |m|
+          token Literal::String, m[1] + m[2]
+          token Text, m[3] if m[3] && !m[3].empty?
+          token Name::Label, m[4] if m[4]
+          token Text, m[5]
+          push :src_block
+        end
 
         # export blocks
         rule %r/^[ \t]*#\+BEGIN_EXPORT\b/i, Comment::Preproc, :export_block
