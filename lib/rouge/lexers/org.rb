@@ -24,6 +24,10 @@ module Rouge
           end
         end
 
+        # checkboxes (unordered, ordered)
+        rule %r/^[ \t]*[-+][ \t]\[[ X-]\]/, Punctuation
+        rule %r/^[ \t]*\d+[.)][ \t]\[[ X-]\]/, Punctuation
+
         # lists (unordered, ordered)
         rule %r/^[ \t]*[-+](?=[ \t])/, Punctuation
         rule %r/^[ \t]*\d+[.)](?=[ \t])/, Punctuation

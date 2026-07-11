@@ -29,6 +29,12 @@ describe Rouge::Lexers::Org do
           "1. item\n",
           "1) item\n",
           "  1. nested\n",
+          "- [ ] unchecked\n",
+          "- [X] checked\n",
+          "- [-] partial\n",
+          "+ [ ] unchecked plus\n",
+          "1. [ ] unchecked ordered\n",
+          "1. [X] checked ordered\n",
         ].each do |text|
           assert_has_token("Punctuation", text)
         end
