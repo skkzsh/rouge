@@ -95,6 +95,9 @@ describe Rouge::Lexers::Org do
           "#+RESULTS:\n",
           "#+TBLFM: formula\n",
           "  #+TITLE: Indented\n",
+          "[[https://example.com]]\n",
+          "[[https://example.com][Example link]]\n",
+          "<https://example.com>\n",
         ].each do |text|
           assert_has_token("Name.Tag", text)
         end
@@ -104,6 +107,8 @@ describe Rouge::Lexers::Org do
         [
           "#+ TITLE: Sample\n",
           "#+TITLE : Sample\n",
+          "[[incomplete\n",
+          "<not a url>\n",
         ].each do |text|
           deny_has_token("Name.Tag", text)
         end

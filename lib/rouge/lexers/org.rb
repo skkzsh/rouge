@@ -31,6 +31,11 @@ module Rouge
         rule %r/^[ \t]*\|[-|\+]*[ \t]*$/, Punctuation
         rule %r/^[ \t]*\|[^\n]*/, Punctuation
 
+        # links ([[link][description]], [[link]], <link>)
+        rule %r/\[\[[^\]\[\n]+\]\[[^\]\[\n]+\]\]/, Name::Tag
+        rule %r/\[\[[^\]\[\n]+\]\]/, Name::Tag
+        rule %r/<\w+:[^\s<>\n]+>/, Name::Tag
+
         # checkboxes (unordered, ordered)
         rule %r/^[ \t]*[-+][ \t]\[[ X-]\]/, Punctuation
         rule %r/^[ \t]*\d+[.)][ \t]\[[ X-]\]/, Punctuation
