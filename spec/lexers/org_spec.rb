@@ -175,9 +175,9 @@ describe Rouge::Lexers::Org do
 
       it 'excludes trailing punctuation from bare links' do
         assert_tokens_equal "See https://example.com.\n",
-          ["Text", "See "],
-          ["Name.Attribute", "https://example.com"],
-          ["Text", ".\n"]
+                            ["Text", "See "],
+                            ["Name.Attribute", "https://example.com"],
+                            ["Text", ".\n"]
       end
     end
 
@@ -399,6 +399,106 @@ describe Rouge::Lexers::Org do
           ORG
         ].each do |text|
           assert_has_token("Literal.String", text)
+        end
+      end
+    end
+
+    describe 'source blocks' do
+      describe 'with language name' do
+        it 'recognizes Literal::String tokens' do
+          [
+            <<~ORG,
+              #+BEGIN_SRC ruby :exports both
+              puts "hello"
+              #+END_SRC
+            ORG
+            <<~ORG,
+              #+begin_src ruby :exports both
+              puts "hello"
+              #+end_src
+            ORG
+          ].each do |text|
+            assert_has_token("Literal.String", text)
+          end
+        end
+      end
+
+      describe 'without language name' do
+        it 'recognizes Literal::String tokens' do
+          text = <<~ORG
+            #+BEGIN_SRC
+            puts "hello"
+            #+END_SRC
+          ORG
+          assert_has_token("Literal.String", text)
+        end
+      end
+    end
+
+    describe 'export blocks' do
+      describe 'with backend name' do
+        it 'recognizes Comment::Preproc tokens' do
+          [
+            <<~ORG,
+              #+BEGIN_EXPORT html
+              <p>HTML content</p>
+              #+END_EXPORT
+            ORG
+            <<~ORG,
+              #+begin_export html
+              <p>HTML content</p>
+              #+end_export
+            ORG
+          ].each do |text|
+            assert_has_token("Comment.Preproc", text)
+          end
+        end
+      end
+
+      describe 'without backend name' do
+        it 'recognizes Comment::Preproc tokens' do
+          text = <<~ORG
+            #+BEGIN_EXPORT
+            plain content
+            #+END_EXPORT
+          ORG
+          assert_has_token("Comment.Preproc", text)
+        end
+      end
+    end
+
+    describe 'dynamic blocks' do
+      describe 'with block type name' do
+        it 'recognizes Comment::Preproc tokens' do
+          [
+            <<~ORG,
+              #+BEGIN: clocktable :maxlevel 2
+              | Heading | Time |
+              |--------+------|
+              | Task   | 1:00 |
+              #+END:
+            ORG
+            <<~ORG,
+              #+begin: clocktable :maxlevel 2
+              | Heading | Time |
+              |--------+------|
+              | Task   | 1:00 |
+              #+end:
+            ORG
+          ].each do |text|
+            assert_has_token("Comment.Preproc", text)
+          end
+        end
+      end
+
+      describe 'without block type name' do
+        it 'recognizes Comment::Preproc tokens' do
+          text = <<~ORG
+            #+BEGIN:
+            content
+            #+END:
+          ORG
+          assert_has_token("Comment.Preproc", text)
         end
       end
     end

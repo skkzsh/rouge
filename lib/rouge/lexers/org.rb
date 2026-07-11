@@ -23,6 +23,9 @@ module Rouge
           token heading_tok, m[4]
         end
 
+        # dynamic blocks
+        rule %r/^[ \t]*#\+BEGIN:/i, Comment::Preproc, :dynamic_block
+
         # in-buffer settings (metadata keywords)
         rule %r/^[ \t]*#\+\w+:/, Name::Tag
 
@@ -34,6 +37,12 @@ module Rouge
 
         # example blocks
         rule %r/^[ \t]*#\+BEGIN_EXAMPLE\b/i, Literal::String, :example_block
+
+        # source blocks
+        rule %r/^[ \t]*#\+BEGIN_SRC\b/i, Literal::String, :src_block
+
+        # export blocks
+        rule %r/^[ \t]*#\+BEGIN_EXPORT\b/i, Comment::Preproc, :export_block
 
         # paragraph blocks (quote, center, verse, etc.)
         rule %r/^[ \t]*#\+BEGIN_(\w+)\b/i do |m|
@@ -110,6 +119,22 @@ module Rouge
         rule %r/\n/, Literal::String
       end
 
+      state :src_block do
+        rule %r/^[ \t]*#\+END_SRC\b/i, Literal::String, :pop!
+        rule %r/[^\n]+/, Literal::String
+        rule %r/\n/, Literal::String
+      end
+
+      state :export_block do
+        rule %r/^[ \t]*#\+END_EXPORT\b/i, Comment::Preproc, :pop!
+        rule %r/[^\n]+/, Literal::String
+        rule %r/\n/, Literal::String
+      end
+
+      state :dynamic_block do
+        rule %r/^[ \t]*#\+END:/i, Comment::Preproc, :pop!
+        mixin :inline
+      end
     end
   end
 end
