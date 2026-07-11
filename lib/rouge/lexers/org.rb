@@ -32,6 +32,9 @@ module Rouge
         # comment blocks
         rule %r/^[ \t]*#\+BEGIN_COMMENT\b/i, Comment, :comment_block
 
+        # example blocks
+        rule %r/^[ \t]*#\+BEGIN_EXAMPLE\b/i, Literal::String, :example_block
+
         # inline examples
         rule %r/^[ \t]*:[ \t][^\n]*/, Literal::String
 
@@ -67,6 +70,12 @@ module Rouge
         rule %r/^[ \t]*#\+END_COMMENT\b/i, Comment, :pop!
         rule %r/[^\n]+/, Comment
         rule %r/\n/, Comment
+      end
+
+      state :example_block do
+        rule %r/^[ \t]*#\+END_EXAMPLE\b/i, Literal::String, :pop!
+        rule %r/[^\n]+/, Literal::String
+        rule %r/\n/, Literal::String
       end
     end
   end

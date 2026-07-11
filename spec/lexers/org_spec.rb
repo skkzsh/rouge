@@ -210,6 +210,23 @@ describe Rouge::Lexers::Org do
           assert_has_token("Literal.String", text)
         end
       end
+
+      it 'recognizes Literal::String tokens in example blocks' do
+        [
+          <<~ORG,
+            #+BEGIN_EXAMPLE
+            Here is an EXAMPLE.
+            #+END_EXAMPLE
+          ORG
+          <<~ORG,
+            #+begin_example
+            Here is an example.
+            #+end_example
+          ORG
+        ].each do |text|
+          assert_has_token("Literal.String", text)
+        end
+      end
     end
   end
 end
