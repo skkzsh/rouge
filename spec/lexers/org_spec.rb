@@ -164,5 +164,24 @@ describe Rouge::Lexers::Org do
         end
       end
     end
+
+    describe 'comments' do
+      it 'recognizes Comment tokens' do
+        [
+          "# This is a comment\n",
+          "  # indented comment\n",
+        ].each do |text|
+          assert_has_token("Comment", text)
+        end
+      end
+
+      it 'does not treat edge cases as Comment' do
+        [
+          "#NoSpace\n",
+        ].each do |text|
+          deny_has_token("Comment", text)
+        end
+      end
+    end
   end
 end

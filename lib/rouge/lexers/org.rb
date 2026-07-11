@@ -26,6 +26,9 @@ module Rouge
         # in-buffer settings (metadata keywords)
         rule %r/^[ \t]*#\+\w+:/, Name::Tag
 
+        # comments
+        rule %r/^[ \t]*#[ \t][^\n]*/, Comment
+
         # table (separators, rows)
         rule %r/^[ \t]*\|[-|\+]*[ \t]*$/, Punctuation
         rule %r/^[ \t]*\|[^\n]*/, Punctuation
