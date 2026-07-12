@@ -440,7 +440,7 @@ describe Rouge::Lexers::Org do
 
     describe 'export blocks' do
       describe 'with backend name' do
-        it 'recognizes Comment::Preproc tokens' do
+        it 'recognizes Comment::Preproc and Name::Label tokens' do
           [
             <<~ORG,
               #+BEGIN_EXPORT html
@@ -454,18 +454,20 @@ describe Rouge::Lexers::Org do
             ORG
           ].each do |text|
             assert_has_token("Comment.Preproc", text)
+            assert_has_token("Name.Label", text)
           end
         end
       end
 
       describe 'without backend name' do
-        it 'recognizes Comment::Preproc tokens' do
+        it 'recognizes Comment::Preproc but not Name::Label tokens' do
           text = <<~ORG
             #+BEGIN_EXPORT
             plain content
             #+END_EXPORT
           ORG
           assert_has_token("Comment.Preproc", text)
+          deny_has_token("Name.Label", text)
         end
       end
     end

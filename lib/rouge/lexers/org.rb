@@ -76,7 +76,13 @@ module Rouge
         end
 
         # export blocks
-        rule %r/^[ \t]*#\+BEGIN_EXPORT\b/i, Comment::Preproc, :export_block
+        rule %r/^([ \t]*)(#\+BEGIN_EXPORT)([ \t]*)(\w+)?([^\n]*\n)/i do |m|
+          token Comment::Preproc, m[1] + m[2]
+          token Text, m[3] if m[3] && !m[3].empty?
+          token Name::Label, m[4] if m[4]
+          token Text, m[5]
+          push :export_block
+        end
 
         # paragraph blocks (quote, center, verse, etc.)
         rule %r/^[ \t]*#\+BEGIN_(\w+)\b/i do |m|
