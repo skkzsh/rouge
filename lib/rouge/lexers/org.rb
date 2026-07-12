@@ -80,17 +80,20 @@ module Rouge
         rule %r/\bhttps?:\/\/[^\s<>()\[\]]*[^\s<>()\[\].,;:!?'"]/, Name::Attribute
 
         # emphasis (bold, italic, underline, strike-through, verbatim, code, superscript, subscript)
-        rule %r/(?<![\w*])\*([^\s*]|[^\s*][^*\n]*?[^\s*])\*(?![\w*])/, Generic::Strong
-        rule %r/(?<![\w\/])\/([^\s\/]|[^\s\/][^\/\n]*?[^\s\/])\/(?![\w\/])/, Generic::Emph
-        rule %r/(?<![\w_])_([^\s_{]|[^\s_][^_\n]*?[^\s_])_(?![\w_])/, Generic::Emph
-        rule %r/(?<![\w+])\+([^\s+]|[^\s+][^+\n]*?[^\s+])\+(?![\w+])/, Generic::Deleted
-        rule %r/(?<![\w=])=([^\s=]|[^\s=][^=\n]*?[^\s=])=(?![\w=])/, Literal::String
-        rule %r/(?<![\w~])~([^\s~]|[^\s~][^~\n]*?[^\s~])~(?![\w~])/, Literal::String::Backtick
+        rule %r/(?<![\w*])\*([^\s*]|[^\s*](?:\\.|[^*\n])*?[^\s*])\*(?![\w*])/, Generic::Strong
+        rule %r/(?<![\w\/])\/([^\s\/]|[^\s\/](?:\\.|[^\/\n])*?[^\s\/])\/(?![\w\/])/, Generic::Emph
+        rule %r/(?<![\w_])_([^\s_{]|[^\s_](?:\\.|[^_\n])*?[^\s_])_(?![\w_])/, Generic::Emph
+        rule %r/(?<![\w+])\+([^\s+]|[^\s+](?:\\.|[^+\n])*?[^\s+])\+(?![\w+])/, Generic::Deleted
+        rule %r/(?<![\w=])=([^\s=]|[^\s=](?:\\.|[^=\n])*?[^\s=])=(?![\w=])/, Literal::String
+        rule %r/(?<![\w~])~([^\s~]|[^\s~](?:\\.|[^~\n])*?[^\s~])~(?![\w~])/, Literal::String::Backtick
         rule %r/\^\{[^}\n]*\}/, Literal::String::Interpol
         rule %r/_\{[^}\n]*\}/, Literal::String::Interpol
 
+        # escape sequences outside emphasis context
+        rule %r/\\./, Str::Escape
+
         # everything else
-        rule %r/(?:(?!https?:\/\/)[^*\/+=~^_{\n])+/, Text
+        rule %r/(?:(?!https?:\/\/)[^*\/+=~^_{\n\\])+/, Text
         rule %r/\n/, Text
         rule %r/./, Text
       end

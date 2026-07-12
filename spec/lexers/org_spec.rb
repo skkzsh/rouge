@@ -252,6 +252,41 @@ describe Rouge::Lexers::Org do
       end
     end
 
+    describe 'escapes' do
+      it 'recognizes Str::Escape and does not highlight escaped markup as emphasis' do
+        [
+          "\\*not bold\\*\n",
+          "\\/not italic\\/\n",
+          "\\_not underlined\\_\n",
+          "\\+not strike\\+\n",
+          "\\=not verbatim\\=\n",
+          "\\~not code\\~\n",
+          "\\\\literal backslash\n",
+        ].each do |text|
+          assert_has_token("Literal.String.Escape", text)
+          deny_has_token("Generic.Strong", text)
+          deny_has_token("Generic.Emph", text)
+          deny_has_token("Generic.Deleted", text)
+          deny_has_token("Literal.String.Backtick", text)
+        end
+      end
+    end
+
+    describe 'escaped markup inside emphasis' do
+      it 'treats escaped delimiter inside emphasis span as part of the span' do
+        [
+          ["*a\\*b*\n", "Generic.Strong"],
+          ["/a\\/b/\n", "Generic.Emph"],
+          ["_a\\_b_\n", "Generic.Emph"],
+          ["+a\\+b+\n", "Generic.Deleted"],
+          ["=a\\=b=\n", "Literal.String"],
+          ["~a\\~b~\n", "Literal.String.Backtick"],
+        ].each do |text, token|
+          assert_has_token(token, text)
+        end
+      end
+    end
+
     describe 'comments' do
       it 'recognizes Comment tokens' do
         [
