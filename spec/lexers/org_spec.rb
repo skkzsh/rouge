@@ -455,6 +455,7 @@ describe Rouge::Lexers::Org do
           ].each do |text|
             assert_has_token("Comment.Preproc", text)
             assert_has_token("Name.Label", text)
+            assert_has_token("Name.Tag", text)
           end
         end
       end

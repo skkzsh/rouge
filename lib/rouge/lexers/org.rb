@@ -82,7 +82,17 @@ module Rouge
           token Name::Label, m[4] if m[4]
           token Text, m[5]
 
-          sublexer = PlainText.new(@options.merge(:token => Str::Backtick))
+          backend = (m[4] || "").strip
+          sublexer =
+            begin
+              if backend.empty?
+                PlainText.new(@options.merge(:token => Str::Backtick))
+              else
+                Lexer.find_fancy(backend, nil, @options) || PlainText.new(@options.merge(:token => Str::Backtick))
+              end
+            rescue Guesser::Ambiguous => e
+              e.alternatives.first.new(@options)
+            end
           sublexer.reset!
 
           push do
