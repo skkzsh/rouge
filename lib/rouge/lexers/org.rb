@@ -24,7 +24,13 @@ module Rouge
         end
 
         # dynamic blocks
-        rule %r/^[ \t]*#\+BEGIN:/i, Comment::Preproc, :dynamic_block
+        rule %r/^([ \t]*)(#\+BEGIN:)([ \t]*)(\w+)?([^\n]*\n)/i do |m|
+          token Comment::Preproc, m[1] + m[2]
+          token Text, m[3] if m[3] && !m[3].empty?
+          token Name::Label, m[4] if m[4]
+          token Text, m[5]
+          push :dynamic_block
+        end
 
         # in-buffer settings (metadata keywords)
         rule %r/^[ \t]*#\+\w+:/, Name::Tag

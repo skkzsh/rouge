@@ -469,7 +469,7 @@ describe Rouge::Lexers::Org do
 
     describe 'dynamic blocks' do
       describe 'with block type name' do
-        it 'recognizes Comment::Preproc tokens' do
+        it 'recognizes Comment::Preproc and Name::Label tokens' do
           [
             <<~ORG,
               #+BEGIN: clocktable :maxlevel 2
@@ -487,18 +487,20 @@ describe Rouge::Lexers::Org do
             ORG
           ].each do |text|
             assert_has_token("Comment.Preproc", text)
+            assert_has_token("Name.Label", text)
           end
         end
       end
 
       describe 'without block type name' do
-        it 'recognizes Comment::Preproc tokens' do
+        it 'recognizes Comment::Preproc but not Name::Label tokens' do
           text = <<~ORG
             #+BEGIN:
             content
             #+END:
           ORG
           assert_has_token("Comment.Preproc", text)
+          deny_has_token("Name.Label", text)
         end
       end
     end
