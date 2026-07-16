@@ -95,9 +95,6 @@ describe Rouge::Lexers::Org do
           "#+RESULTS:\n",
           "#+TBLFM: formula\n",
           "  #+TITLE: Indented\n",
-          "[[https://example.com]]\n",
-          "[[https://example.com][Example link]]\n",
-          "<https://example.com>\n",
         ].each do |text|
           assert_has_token("Name.Tag", text)
         end
@@ -107,10 +104,38 @@ describe Rouge::Lexers::Org do
         [
           "#+ TITLE: Sample\n",
           "#+TITLE : Sample\n",
-          "[[incomplete\n",
-          "<not a url>\n",
         ].each do |text|
           deny_has_token("Name.Tag", text)
+        end
+      end
+    end
+
+    describe 'links' do
+      it 'recognizes the link and description of a bracket link with description' do
+        text = "[[https://example.com][Example link]]\n"
+        assert_has_token("Punctuation", text)
+        assert_has_token("Name.Attribute", text)
+        assert_has_token("Name.Tag", text)
+      end
+
+      it 'recognizes the brackets and link of a bracket link as Punctuation and Name::Attribute' do
+        text = "[[./img/cat.png]]\n"
+        assert_has_token("Punctuation", text)
+        assert_has_token("Name.Attribute", text)
+      end
+
+      it 'recognizes the brackets and link of an angle-bracket link as Punctuation and Name::Attribute' do
+        text = "<https://example.com>\n"
+        assert_has_token("Punctuation", text)
+        assert_has_token("Name.Attribute", text)
+      end
+
+      it 'does not treat edge cases as links' do
+        [
+          "[[incomplete\n",
+          "<not a link>\n",
+        ].each do |text|
+          deny_has_token("Name.Attribute", text)
         end
       end
     end

@@ -32,9 +32,15 @@ module Rouge
         rule %r/^[ \t]*\|[^\n]*/, Punctuation
 
         # links ([[link][description]], [[link]], <link>)
-        rule %r/\[\[[^\]\[\n]+\]\[[^\]\[\n]+\]\]/, Name::Tag
-        rule %r/\[\[[^\]\[\n]+\]\]/, Name::Tag
-        rule %r/<\w+:[^\s<>\n]+>/, Name::Tag
+        rule %r/(\[\[)([^\]\[\n]+)(\]\[)([^\]\[\n]+)(\]\])/ do
+          groups Punctuation, Name::Attribute, Punctuation, Name::Tag, Punctuation
+        end
+        rule %r/(\[\[)([^\]\[\n]+)(\]\])/ do
+          groups Punctuation, Name::Attribute, Punctuation
+        end
+        rule %r/(<)(\w+:[^\s<>\n]+)(>)/ do
+          groups Punctuation, Name::Attribute, Punctuation
+        end
 
         # checkboxes (unordered, ordered)
         rule %r/^[ \t]*[-+][ \t]\[[ X-]\]/, Punctuation
