@@ -53,6 +53,9 @@ module Rouge
           groups Punctuation, Name::Attribute, Punctuation
         end
 
+        # bare links
+        rule %r/\bhttps?:\/\/[^\s<>()\[\]]*[^\s<>()\[\].,;:!?'"]/, Name::Attribute
+
         # emphasis (bold, italic, underline, strike-through, verbatim, code, superscript, subscript)
         rule %r/(?<![\w*])\*([^\s*]|[^\s*][^*\n]*?[^\s*])\*(?![\w*])/, Generic::Strong
         rule %r/(?<![\w\/])\/([^\s\/]|[^\s\/][^\/\n]*?[^\s\/])\/(?![\w\/])/, Generic::Emph
@@ -72,7 +75,7 @@ module Rouge
         rule %r/^[ \t]*\d+[.)](?=[ \t])/, Punctuation
 
         # everything else
-        rule %r/[^*\/+=~^_{\n]+/, Text
+        rule %r/(?:(?!https?:\/\/)[^*\/+=~^_{\n])+/, Text
         rule %r/\n/, Text
         rule %r/./, Text
       end

@@ -163,6 +163,22 @@ describe Rouge::Lexers::Org do
           deny_has_token("Name.Attribute", text)
         end
       end
+
+      it 'recognizes bare links as Name::Attribute' do
+        [
+          "https://example.com\n",
+          "http://localhost\n",
+        ].each do |text|
+          assert_has_token("Name.Attribute", text)
+        end
+      end
+
+      it 'excludes trailing punctuation from bare links' do
+        assert_tokens_equal "See https://example.com.\n",
+          ["Text", "See "],
+          ["Name.Attribute", "https://example.com"],
+          ["Text", ".\n"]
+      end
     end
 
     describe 'emphasis' do
