@@ -83,6 +83,31 @@ describe Rouge::Lexers::Org do
           deny_has_token("Generic.Subheading", text)
         end
       end
+
+      describe 'COMMENT keyword' do
+        it 'recognizes Comment tokens' do
+          [
+            "* COMMENT Not exported\n",
+            "** COMMENT Sub not exported\n",
+          ].each do |text|
+            assert_has_token("Comment", text)
+          end
+        end
+
+        it 'recognizes Generic::Subheading alongside Comment' do
+          assert_has_token("Generic.Subheading", "** COMMENT Sub not exported\n")
+        end
+
+        it 'does not treat edge cases as the COMMENT keyword' do
+          [
+            "* COMMENTother\n",
+            "* comment lower\n",
+            "* Heading COMMENT inline\n",
+          ].each do |text|
+            deny_has_token("Comment", text)
+          end
+        end
+      end
     end
 
     describe 'metadata' do

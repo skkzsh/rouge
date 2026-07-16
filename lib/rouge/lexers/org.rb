@@ -16,12 +16,11 @@ module Rouge
         rule %r/^[ \t]*-{5,}\s*$/, Punctuation
 
         # headings
-        rule %r/^(\*+)[ \t][^\n]*/ do |m|
-          if m[1].length == 1
-            token Generic::Heading, m[0]
-          else
-            token Generic::Subheading, m[0]
-          end
+        rule %r/^(\*+)([ \t])(COMMENT(?=[ \t]|$))?([^\n]*)/ do |m|
+          heading_tok = m[1].length == 1 ? Generic::Heading : Generic::Subheading
+          token heading_tok, m[1] + m[2]
+          token Comment, m[3] if m[3]
+          token heading_tok, m[4]
         end
 
         # in-buffer settings (metadata keywords)
