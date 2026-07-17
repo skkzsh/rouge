@@ -404,110 +404,98 @@ describe Rouge::Lexers::Org do
     end
 
     describe 'source blocks' do
-      describe 'with language name' do
-        it 'recognizes Literal::String, Name::Label, and Name::Builtin tokens' do
-          [
-            <<~ORG,
-              #+BEGIN_SRC ruby :exports both
-              puts "hello"
-              #+END_SRC
-            ORG
-            <<~ORG,
-              #+begin_src ruby :exports both
-              puts "hello"
-              #+end_src
-            ORG
-          ].each do |text|
-            assert_has_token("Literal.String", text)
-            assert_has_token("Name.Label", text)
-            assert_has_token("Name.Builtin", text)
-          end
-        end
-      end
-
-      describe 'without language name' do
-        it 'recognizes Literal::String but not Name::Label tokens' do
-          text = <<~ORG
-            #+BEGIN_SRC
+      it 'recognizes Literal::String, Name::Label, and Name::Builtin tokens when a language name is given' do
+        [
+          <<~ORG,
+            #+BEGIN_SRC ruby :exports both
             puts "hello"
             #+END_SRC
           ORG
+          <<~ORG,
+            #+begin_src ruby :exports both
+            puts "hello"
+            #+end_src
+          ORG
+        ].each do |text|
           assert_has_token("Literal.String", text)
-          deny_has_token("Name.Label", text)
+          assert_has_token("Name.Label", text)
+          assert_has_token("Name.Builtin", text)
         end
+      end
+
+      it 'recognizes Literal::String but not Name::Label tokens when no language name is given' do
+        text = <<~ORG
+          #+BEGIN_SRC
+          puts "hello"
+          #+END_SRC
+        ORG
+        assert_has_token("Literal.String", text)
+        deny_has_token("Name.Label", text)
       end
     end
 
     describe 'export blocks' do
-      describe 'with backend name' do
-        it 'recognizes Comment::Preproc and Name::Label tokens' do
-          [
-            <<~ORG,
-              #+BEGIN_EXPORT html
-              <p>HTML content</p>
-              #+END_EXPORT
-            ORG
-            <<~ORG,
-              #+begin_export html
-              <p>HTML content</p>
-              #+end_export
-            ORG
-          ].each do |text|
-            assert_has_token("Comment.Preproc", text)
-            assert_has_token("Name.Label", text)
-            assert_has_token("Name.Tag", text)
-          end
+      it 'recognizes Comment::Preproc and Name::Label tokens when a backend name is given' do
+        [
+          <<~ORG,
+            #+BEGIN_EXPORT html
+            <p>HTML content</p>
+            #+END_EXPORT
+          ORG
+          <<~ORG,
+            #+begin_export html
+            <p>HTML content</p>
+            #+end_export
+          ORG
+        ].each do |text|
+          assert_has_token("Comment.Preproc", text)
+          assert_has_token("Name.Label", text)
+          assert_has_token("Name.Tag", text)
         end
       end
 
-      describe 'without backend name' do
-        it 'recognizes Comment::Preproc but not Name::Label tokens' do
-          text = <<~ORG
-            #+BEGIN_EXPORT
-            plain content
-            #+END_EXPORT
-          ORG
-          assert_has_token("Comment.Preproc", text)
-          deny_has_token("Name.Label", text)
-        end
+      it 'recognizes Comment::Preproc but not Name::Label tokens when no backend name is given' do
+        text = <<~ORG
+          #+BEGIN_EXPORT
+          plain content
+          #+END_EXPORT
+        ORG
+        assert_has_token("Comment.Preproc", text)
+        deny_has_token("Name.Label", text)
       end
     end
 
     describe 'dynamic blocks' do
-      describe 'with block type name' do
-        it 'recognizes Comment::Preproc and Name::Label tokens' do
-          [
-            <<~ORG,
-              #+BEGIN: clocktable :maxlevel 2
-              | Heading | Time |
-              |--------+------|
-              | Task   | 1:00 |
-              #+END:
-            ORG
-            <<~ORG,
-              #+begin: clocktable :maxlevel 2
-              | Heading | Time |
-              |--------+------|
-              | Task   | 1:00 |
-              #+end:
-            ORG
-          ].each do |text|
-            assert_has_token("Comment.Preproc", text)
-            assert_has_token("Name.Label", text)
-          end
+      it 'recognizes Comment::Preproc and Name::Label tokens when a block type name is given' do
+        [
+          <<~ORG,
+            #+BEGIN: clocktable :maxlevel 2
+            | Heading | Time |
+            |--------+------|
+            | Task   | 1:00 |
+            #+END:
+          ORG
+          <<~ORG,
+            #+begin: clocktable :maxlevel 2
+            | Heading | Time |
+            |--------+------|
+            | Task   | 1:00 |
+            #+end:
+          ORG
+        ].each do |text|
+          assert_has_token("Comment.Preproc", text)
+          assert_has_token("Name.Label", text)
         end
       end
 
-      describe 'without block type name' do
-        it 'recognizes Comment::Preproc but not Name::Label tokens' do
-          text = <<~ORG
-            #+BEGIN:
-            content
-            #+END:
-          ORG
-          assert_has_token("Comment.Preproc", text)
-          deny_has_token("Name.Label", text)
-        end
+      it 'recognizes Comment::Preproc but not Name::Label tokens when no block type name is given' do
+        text = <<~ORG
+          #+BEGIN:
+          content
+          #+END:
+        ORG
+        assert_has_token("Comment.Preproc", text)
+        deny_has_token("Name.Label", text)
       end
     end
   end
